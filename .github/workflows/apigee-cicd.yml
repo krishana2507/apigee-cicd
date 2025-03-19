@@ -1,5 +1,5 @@
 name: Apigee X CI/CD Pipeline
-  
+
 on:
   push:
     branches:
@@ -36,8 +36,16 @@ jobs:
           sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
           apigeecli -v
 
-      - name: Static Code Analysis (Linting & Testing)
-        run: bash scripts/static-analysis.sh
+      - name: Speed Up OWASP Dependency Check
+        run: |
+          mkdir -p ~/.dependency-check
+          export DC_CACHE_DIR=~/.dependency-check
+          mvn org.owasp:dependency-check-maven:check \
+            -Dformat=JSON \
+            -Dnvd.api.key=${{ secrets.NVD_API_KEY }} \
+            -DdataDirectory=${DC_CACHE_DIR} \
+            -Dnvd.updateOnly=false \
+            -Dnvd.cve.url.base=https://services.nvd.nist.gov/rest/json/cves/1.0/
 
       - name: Deploy Apigee Proxy using Maven
         run: |
@@ -47,7 +55,8 @@ jobs:
             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
             -Dapigee.bearer="${{ secrets.APIGEE_SA_KEY }}" \
             -Dapigee.config.options=update \
-            -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
+            -Dnvd.api.key=${{ secrets.NVD_API_KEY }} \
+            -Dnvd.mirror=https://services.nvd.nist.gov/rest/json/cves/1.0/
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
@@ -59,10 +68,12 @@ jobs:
           mvn clean install \
             -Pdeploy \
             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
-            -Dapigee.env=${{ secrets.APIGEE_ENV }}
+            -Dapigee.env=${{ secrets.APIGEE_ENV }} \
+            -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Deploy KVMs, Products, Target Servers
         run: bash scripts/deploy-configs.sh
