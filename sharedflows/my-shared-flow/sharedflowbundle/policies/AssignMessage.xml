@@ -1,0 +1,9 @@
+<AssignMessage name="AssignMessage">
+    <AssignTo createNew="false" type="response"/>
+    <Set>
+        <Payload>{"message": "Processed by Shared Flow!"}</Payload>
+        <Headers>
+            <Header name="Content-Type">application/json</Header>
+        </Headers>
+    </Set>
+</AssignMessage>
