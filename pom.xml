@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
@@ -13,20 +14,19 @@
         <apigee.token>${APIGEE_SA_KEY}</apigee.token>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.apigee.edge</groupId>
-            <artifactId>apigee-config-maven-plugin</artifactId>
-            <version>1.2.3</version>
-        </dependency>
-    </dependencies>
+    <repositories>
+        <repository>
+            <id>apigee-repository</id>
+            <url>https://raw.githubusercontent.com/apigee/apigee-config-maven-plugin/main/repository</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>com.apigee.edge</groupId>
+                <groupId>io.apigee.build-tools.enterprise4g</groupId>
                 <artifactId>apigee-edge-maven-plugin</artifactId>
-                <version>1.2.3</version>
+                <version>2.7.1</version>
                 <configuration>
                     <org>${apigee.org}</org>
                     <env>${apigee.env}</env>
