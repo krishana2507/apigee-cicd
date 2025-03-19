@@ -15,21 +15,12 @@
         <nvd.api.key>${NVD_API_KEY}</nvd.api.key>
     </properties>
 
-    <dependencies>
-        <!-- Apigee X Deployment Plugin -->
-        <dependency>
-            <groupId>io.apigee.build-tools.enterprise4g</groupId>
-            <artifactId>apigee-deploy-maven-plugin</artifactId>
-            <version>2.x</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>io.apigee.build-tools.enterprise4g</groupId>
                 <artifactId>apigee-deploy-maven-plugin</artifactId>
-                <version>2.x</version>
+                <version>2.3.2</version>  <!-- Updated to latest stable version -->
                 <executions>
                     <execution>
                         <goals>
@@ -47,4 +38,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>apigee</id>
+            <url>https://raw.githubusercontent.com/apigee/apigee-deploy-maven-plugin/main/maven-repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
