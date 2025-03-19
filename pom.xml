@@ -12,25 +12,35 @@
         <apigee.org>${APIGEE_ORG}</apigee.org>
         <apigee.env>${APIGEE_ENV}</apigee.env>
         <apigee.token>${APIGEE_SA_KEY}</apigee.token>
+        <apigee.options>update</apigee.options>
     </properties>
 
     <repositories>
         <repository>
-            <id>apigee-repository</id>
-            <url>https://raw.githubusercontent.com/apigee/apigee-config-maven-plugin/main/repository</url>
+            <id>apigee-repo</id>
+            <url>https://maven.apigee.com/artifactory/release</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.apigee.edge</groupId>
+            <artifactId>apigee-config-maven-plugin</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>io.apigee.build-tools.enterprise4g</groupId>
+                <groupId>com.apigee.edge</groupId>
                 <artifactId>apigee-edge-maven-plugin</artifactId>
-                <version>2.7.1</version>
+                <version>1.2.3</version>
                 <configuration>
                     <org>${apigee.org}</org>
                     <env>${apigee.env}</env>
                     <bearer>${apigee.token}</bearer>
+                    <options>${apigee.options}</options>
                 </configuration>
             </plugin>
         </plugins>
