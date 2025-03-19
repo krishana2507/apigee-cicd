@@ -26,11 +26,11 @@ jobs:
 
       - name: Install Apigee CLI
         run: |
-          curl -LO https://github.com/apigee/apigeecli/releases/download/v2.9.1/apigeecli_v2.9.1_Linux_x86_64.zip
-          unzip apigeecli_v2.9.1_Linux_x86_64.zip
-          chmod +x apigeecli
-          sudo mv apigeecli /usr/local/bin/
-          apigeecli version
+           curl -LO https://github.com/apigee/apigeecli/releases/download/v2.9.1/apigeecli_v2.9.1_Linux_x86_64.zip
+           unzip apigeecli_v2.9.1_Linux_x86_64.zip
+           chmod +x apigeecli_v2.9.1_Linux_x86_64/apigeecli
+           sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
+           apigeecli version
 
 
       - name: Install Maven
