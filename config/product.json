@@ -1,0 +1,12 @@
+{
+  "name": "my-api-product",
+  "displayName": "My API Product",
+  "approvalType": "manual",
+  "attributes": [
+    {
+      "name": "access",
+      "value": "public"
+    }
+  ],
+  "environments": ["test"]
+}
