@@ -1,5 +1,5 @@
 name: Apigee X CI/CD Pipeline 
-  
+
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Up JDK & Maven
         uses: actions/setup-java@v3
@@ -45,12 +45,11 @@ jobs:
             -Pdeploy \
             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
-            -Dapigee.bearer="${{ secrets.APIGEE_SA_KEY }}" \
+            -Dapigee.bearer="$(cat gcp-key.json)" \
             -Dapigee.config.options=update
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
 
       - name: Deploy Shared Flow using Maven
         run: |
@@ -65,8 +64,8 @@ jobs:
       - name: Deploy KVMs, Products, Target Servers
         run: bash scripts/deploy-configs.sh
 
-      - name: Cleanup
-        run: rm gcp-key.json
+      - name: Cleanup Sensitive Files
+        run: rm -f gcp-key.json
 
   rollback:
     runs-on: ubuntu-latest
@@ -74,9 +73,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Rollback Deployment
         run: bash scripts/rollback.sh
-
-
