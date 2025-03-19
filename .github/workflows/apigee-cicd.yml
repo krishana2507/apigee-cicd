@@ -30,7 +30,7 @@ jobs:
            unzip apigeecli_v2.9.1_Linux_x86_64.zip
            chmod +x apigeecli_v2.9.1_Linux_x86_64/apigeecli
            sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
-           apigeecli version
+           apigeecli -v
 
 
       - name: Install Maven
