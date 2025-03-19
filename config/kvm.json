@@ -1,0 +1,10 @@
+{
+  "name": "my-kvm",
+  "encrypted": false,
+  "entry": [
+    {
+      "name": "api-key",
+      "value": "123456"
+    }
+  ]
+}
