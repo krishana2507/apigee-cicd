@@ -1,0 +1,48 @@
+name: Apigee CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Authenticate with Google Cloud
+        run: echo "$GCP_SA_KEY" > gcp-key.json
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Install Apigee CLI
+        run: |
+          curl -o apigeecli.tar.gz -L https://github.com/apigee/apigeecli/releases/latest/download/apigeecli_$(uname -s)_$(uname -m).tar.gz
+          tar -xvzf apigeecli.tar.gz
+          sudo mv apigeecli /usr/local/bin/
+
+      - name: Deploy Apigee Proxy
+        run: bash scripts/deploy.sh
+
+      - name: Cleanup
+        run: rm gcp-key.json
+
+  rollback:
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Rollback Deployment
+        run: bash scripts/rollback.sh
