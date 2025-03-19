@@ -32,20 +32,33 @@ jobs:
            sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
            apigeecli -v
 
-
       - name: Install Maven
         run: |
           sudo apt update
           sudo apt install -y maven
 
+      - name: Verify Maven Setup
+        run: mvn -version
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
       - name: Static Code Analysis (Linting & Testing)
         run: bash scripts/static-analysis.sh
 
       - name: Deploy Apigee Proxy using Maven
-        run: mvn clean install apigee-edge:deploy -Ptest -Dapigee.config.options=update -Denv=test -Dorg=my-apigee-org
+        run: mvn clean install apigee-edge:deploy -Dapigee.org=my-apigee-org -Dapigee.env=test -Dapigee.token=$APIGEE_SA_KEY -Dapigee.config.options=update
+        env:
+          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
 
       - name: Deploy Shared Flow using Maven
-        run: mvn clean install apigee-config:sharedflowdeploy -Ptest -Denv=test -Dorg=my-apigee-org
+        run: mvn clean install apigee-config:sharedflowdeploy -Dapigee.org=my-apigee-org -Dapigee.env=test -Dapigee.token=$APIGEE_SA_KEY
+        env:
+          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
 
       - name: Deploy KVMs, Products, Target Servers
         run: bash scripts/deploy-configs.sh
@@ -63,3 +76,4 @@ jobs:
 
       - name: Rollback Deployment
         run: bash scripts/rollback.sh
+
