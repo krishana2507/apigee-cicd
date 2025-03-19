@@ -30,8 +30,22 @@ jobs:
           tar -xvzf apigeecli.tar.gz
           sudo mv apigeecli /usr/local/bin/
 
-      - name: Deploy Apigee Proxy
-        run: bash scripts/deploy.sh
+      - name: Install Maven
+        run: |
+          sudo apt update
+          sudo apt install -y maven
+
+      - name: Static Code Analysis (Linting & Testing)
+        run: bash scripts/static-analysis.sh
+
+      - name: Deploy Apigee Proxy using Maven
+        run: mvn clean install apigee-edge:deploy -Ptest -Dapigee.config.options=update -Denv=test -Dorg=my-apigee-org
+
+      - name: Deploy Shared Flow using Maven
+        run: mvn clean install apigee-config:sharedflowdeploy -Ptest -Denv=test -Dorg=my-apigee-org
+
+      - name: Deploy KVMs, Products, Target Servers
+        run: bash scripts/deploy-configs.sh
 
       - name: Cleanup
         run: rm gcp-key.json
