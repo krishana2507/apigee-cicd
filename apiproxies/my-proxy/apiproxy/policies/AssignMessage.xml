@@ -1,0 +1,9 @@
+<AssignMessage name="AssignMessage">
+    <AssignTo createNew="false" type="response"/>
+    <Set>
+        <Payload>{"message": "Hello from Apigee!"}</Payload>
+        <Headers>
+            <Header name="Content-Type">application/json</Header>
+        </Headers>
+    </Set>
+</AssignMessage>
