@@ -20,7 +20,7 @@ jobs:
           java-version: '11'
 
       - name: Authenticate with Google Cloud
-        run: echo "$GCP_SA_KEY" > gcp-key.json
+        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
@@ -37,28 +37,14 @@ jobs:
           sudo apt update
           sudo apt install -y maven
 
-      - name: Verify Maven Setup
-        run: mvn -version
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v3 
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven
-
-      - name: Static Code Analysis (Linting & Testing)
-        run: bash scripts/static-analysis.sh
+      - name: Run OWASP Dependency Check (Security Scan)
+        run: mvn org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }}
 
       - name: Deploy Apigee Proxy using Maven
-        run: mvn clean install apigee-edge:deploy -Dapigee.org=my-apigee-org -Dapigee.env=test -Dapigee.token=$APIGEE_SA_KEY -Dapigee.config.options=update
-        env:
-          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
+        run: mvn clean install apigee-edge:deploy -Ptest -Dapigee.config.options=update -Denv=test -Dorg=${{ secrets.APIGEE_ORG }}
 
       - name: Deploy Shared Flow using Maven
-        run: mvn clean install apigee-config:sharedflowdeploy -Dapigee.org=my-apigee-org -Dapigee.env=test -Dapigee.token=$APIGEE_SA_KEY
-        env:
-          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
+        run: mvn clean install apigee-config:sharedflowdeploy -Ptest -Denv=test -Dorg=${{ secrets.APIGEE_ORG }}
 
       - name: Deploy KVMs, Products, Target Servers
         run: bash scripts/deploy-configs.sh
@@ -76,4 +62,3 @@ jobs:
 
       - name: Rollback Deployment
         run: bash scripts/rollback.sh
-
