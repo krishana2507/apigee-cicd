@@ -1,0 +1,35 @@
+<APIProxy name="my-proxy" revision="1">
+    <BasePaths>/myapi</BasePaths>  <!-- Defines the base path -->
+    <Description>My Sample Apigee Proxy</Description>
+    <Policies>
+        <Policy>VerifyAPIKey</Policy>  <!-- Uses the API key verification policy -->
+        <Policy>AssignMessage</Policy>  <!-- Uses the response modification policy -->
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint name="default">
+            <PreFlow>
+                <Request>
+                    <Step><Name>VerifyAPIKey</Name></Step>
+                </Request>
+                <Response>
+                    <Step><Name>AssignMessage</Name></Step>
+                </Response>
+            </PreFlow>
+            <Flows/>
+            <HTTPProxyConnection>
+                <BasePath>/myapi</BasePath>
+                <VirtualHost>default</VirtualHost>
+            </HTTPProxyConnection>
+            <RouteRule name="default">
+                <TargetEndpoint>default</TargetEndpoint>
+            </RouteRule>
+        </ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint name="default">
+            <HTTPTargetConnection>
+                <URL>https://httpbin.org/get</URL> <!-- Change this to your backend API -->
+            </HTTPTargetConnection>
+        </TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
