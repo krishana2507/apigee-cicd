@@ -1,0 +1,15 @@
+<SharedFlow name="my-shared-flow">
+    <Description>Shared flow for common policies</Description>
+    <PreFlow>
+        <Request>
+            <Step>
+                <Name>VerifyAPIKey</Name> <!-- Verify API key before processing -->
+            </Step>
+        </Request>
+        <Response>
+            <Step>
+                <Name>AssignMessage</Name> <!-- Modify the response -->
+            </Step>
+        </Response>
+    </PreFlow>
+</SharedFlow>
