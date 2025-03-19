@@ -1,0 +1,6 @@
+{
+  "org": "my-apigee-org",
+  "env": "eval",
+  "project_id": "krishna-cicd-project",
+  "service_account": "apigee-cicd-sa@krishna-cicd-project.iam.gserviceaccount.com"
+}
