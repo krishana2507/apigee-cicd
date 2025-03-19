@@ -1,0 +1,4 @@
+<VerifyAPIKey name="VerifyAPIKey">
+    <APIKey ref="request.queryparam.apikey"/>
+    <Scope>my-api-product</Scope>
+</VerifyAPIKey>
