@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -12,35 +12,37 @@
         <apigee.org>${APIGEE_ORG}</apigee.org>
         <apigee.env>${APIGEE_ENV}</apigee.env>
         <apigee.token>${APIGEE_SA_KEY}</apigee.token>
-        <apigee.options>update</apigee.options>
+        <nvd.api.key>${NVD_API_KEY}</nvd.api.key>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>apigee-repo</id>
-            <url>https://maven.apigee.com/artifactory/release</url>
-        </repository>
-    </repositories>
-
     <dependencies>
+        <!-- Apigee X Deployment Plugin -->
         <dependency>
-            <groupId>com.apigee.edge</groupId>
-            <artifactId>apigee-config-maven-plugin</artifactId>
-            <version>1.2.3</version>
+            <groupId>io.apigee.build-tools.enterprise4g</groupId>
+            <artifactId>apigee-deploy-maven-plugin</artifactId>
+            <version>1.3.2</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>com.apigee.edge</groupId>
-                <artifactId>apigee-edge-maven-plugin</artifactId>
-                <version>1.2.3</version>
+                <groupId>io.apigee.build-tools.enterprise4g</groupId>
+                <artifactId>apigee-deploy-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <org>${apigee.org}</org>
-                    <env>${apigee.env}</env>
+                    <organization>${apigee.org}</organization>
+                    <environment>${apigee.env}</environment>
                     <bearer>${apigee.token}</bearer>
-                    <options>${apigee.options}</options>
+                    <override>true</override>
+                    <deployment.suffix>ci</deployment.suffix>
                 </configuration>
             </plugin>
         </plugins>
