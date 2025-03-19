@@ -26,11 +26,11 @@ jobs:
 
       - name: Install Apigee CLI
         run: |
-          go install github.com/apigee/apigeecli/v2@latest
-          mkdir -p $HOME/bin
-          mv $HOME/go/bin/apigeecli $HOME/bin/
-          echo "$HOME/bin" >> $GITHUB_PATH
-          apigeecli version
+           go install github.com/apigee/apigeecli@latest
+           mkdir -p $HOME/bin
+           mv $HOME/go/bin/apigeecli $HOME/bin/
+           echo "$HOME/bin" >> $GITHUB_PATH
+           apigeecli version
 
       - name: Install Maven
         run: |
