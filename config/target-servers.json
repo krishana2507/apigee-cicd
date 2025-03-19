@@ -1,0 +1,6 @@
+{
+  "name": "my-target-server",
+  "host": "example.com",
+  "port": 443,
+  "isEnabled": true
+}
