@@ -1,4 +1,4 @@
-name: Apigee CI/CD Pipeline 
+name: Apigee CI/CD Pipeline
 
 on:
   push:
@@ -20,31 +20,53 @@ jobs:
           java-version: '11'
 
       - name: Authenticate with Google Cloud
-        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+        run: |
+          echo "$GCP_SA_KEY" | base64 --decode > gcp-key.json
+          gcloud auth activate-service-account --key-file=gcp-key.json
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
       - name: Install Apigee CLI
         run: |
-           curl -LO https://github.com/apigee/apigeecli/releases/download/v2.9.1/apigeecli_v2.9.1_Linux_x86_64.zip
-           unzip apigeecli_v2.9.1_Linux_x86_64.zip
-           chmod +x apigeecli_v2.9.1_Linux_x86_64/apigeecli
-           sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
-           apigeecli -v
+          curl -LO https://github.com/apigee/apigeecli/releases/download/v2.9.1/apigeecli_v2.9.1_Linux_x86_64.zip
+          unzip apigeecli_v2.9.1_Linux_x86_64.zip
+          chmod +x apigeecli_v2.9.1_Linux_x86_64/apigeecli
+          sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
+          apigeecli -v
 
       - name: Install Maven
         run: |
           sudo apt update
           sudo apt install -y maven
 
-      - name: Run OWASP Dependency Check (Security Scan)
-        run: mvn org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }}
+      - name: Set Up NVD API Key (Dependency Check)
+        run: |
+          echo "export NVD_API_KEY=${{ secrets.NVD_API_KEY }}" >> ~/.bashrc
+          source ~/.bashrc
+
+      - name: Static Code Analysis (Linting & Testing)
+        run: bash scripts/static-analysis.sh
 
       - name: Deploy Apigee Proxy using Maven
-        run: mvn clean install apigee-edge:deploy -Ptest -Dapigee.config.options=update -Denv=test -Dorg=${{ secrets.APIGEE_ORG }}
+        run: |
+          mvn clean install apigee-edge:deploy \
+            -Ptest \
+            -Dapigee.org=${{ secrets.APIGEE_ORG }} \
+            -Dapigee.env=test \
+            -Dapigee.bearer=${{ secrets.APIGEE_SA_KEY }} \
+            -Dapigee.config.options=update
+        env:
+          APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
+          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
 
       - name: Deploy Shared Flow using Maven
-        run: mvn clean install apigee-config:sharedflowdeploy -Ptest -Denv=test -Dorg=${{ secrets.APIGEE_ORG }}
+        run: |
+          mvn clean install apigee-config:sharedflowdeploy \
+            -Ptest \
+            -Dapigee.org=${{ secrets.APIGEE_ORG }} \
+            -Dapigee.env=test
+        env:
+          APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
 
       - name: Deploy KVMs, Products, Target Servers
         run: bash scripts/deploy-configs.sh
@@ -55,10 +77,11 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     if: failure()
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Rollback Deployment
         run: bash scripts/rollback.sh
+
