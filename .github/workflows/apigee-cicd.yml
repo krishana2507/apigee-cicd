@@ -20,8 +20,8 @@ jobs:
           java-version: '11'
           cache: 'maven'
 
-      - name: Decode GCP Service Account Key
-        run: echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > gcp-key.json
+      - name: Decode GCP Service Account Key # ✅ UPDATED: Save decoded JSON to a file
+        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -36,31 +36,27 @@ jobs:
           sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
           apigeecli -v
 
-      - name: Speed Up OWASP Dependency Check
+      - name: Speed Up OWASP Dependency Check (optional)
         run: |
           mkdir -p ~/.dependency-check
           export DC_CACHE_DIR=~/.dependency-check
           mvn org.owasp:dependency-check-maven:check \
             -Dformat=JSON \
             -Dnvd.api.key=${{ secrets.NVD_API_KEY }} \
-            -DdataDirectory=${DC_CACHE_DIR} \
-            -Dnvd.updateOnly=false \
-            -Dnvd.cve.url.base=https://services.nvd.nist.gov/rest/json/cves/1.0/
+            -DdataDirectory=${DC_CACHE_DIR}
 
-      - name: Deploy Apigee Proxy using Maven
+      - name: Deploy Apigee Proxy using Maven # ✅ UPDATED: Reference the JSON file instead of passing raw key
         run: |
           mvn clean install \
             -Pdeploy \
             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
-            -Dapigee.bearer="${{ secrets.APIGEE_SA_KEY }}" \
+            -Dapigee.credentials=$(pwd)/gcp-key.json \
             -Dapigee.config.options=update \
-            -Dnvd.api.key=${{ secrets.NVD_API_KEY }} \
-            -Dnvd.mirror=https://services.nvd.nist.gov/rest/json/cves/1.0/
+            -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-          APIGEE_SA_KEY: ${{ secrets.APIGEE_SA_KEY }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Deploy Shared Flow using Maven
@@ -69,6 +65,7 @@ jobs:
             -Pdeploy \
             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
+            -Dapigee.credentials=$(pwd)/gcp-key.json \
             -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
