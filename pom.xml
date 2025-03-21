@@ -20,7 +20,7 @@
             <plugin>
                 <groupId>io.apigee.build-tools.enterprise4g</groupId>
                 <artifactId>apigee-deploy-maven-plugin</artifactId>
-                <version>2.3.2</version>  <!-- Updated to latest stable version -->
+                <version>2.3.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -39,13 +39,40 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.apigee.build-tools.enterprise4g</groupId>
+                        <artifactId>apigee-deploy-maven-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <organization>${apigee.org}</organization>
+                            <environment>${apigee.env}</environment>
+                            <bearer>${apigee.token}</bearer>
+                            <override>true</override>
+                            <deployment.suffix>ci</deployment.suffix>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>apigee</id>
             <url>https://raw.githubusercontent.com/apigee/apigee-deploy-maven-plugin/main/maven-repo</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apigee-plugin-repo</id>
+            <url>https://raw.githubusercontent.com/apigee/apigee-deploy-maven-plugin/main/maven-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>
