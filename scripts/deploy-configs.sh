@@ -1,13 +1,18 @@
 #!/bin/bash
-echo "Deploying API Configurations..."
 
-# Deploy KVMs
-apigeecli kvms create --org my-apigee-org --env test --name my-kvm --body config/kvm.json --token "$(gcloud auth print-access-token)"
+set -e
 
-# Deploy Target Servers
-apigeecli targetservers create --org my-apigee-org --env test --name my-target --body config/target-servers.json --token "$(gcloud auth print-access-token)"
+ORG="${APIGEE_ORG}"
+ENV="${APIGEE_ENV}"
+SA_KEY_PATH="gcp-key.json"
 
-# Deploy API Products
-apigeecli products create --org my-apigee-org --name my-product --body config/products.json --token "$(gcloud auth print-access-token)"
+echo "🔧 Deploying KVMs..."
+apigeecli kvms create --env "$ENV" --org "$ORG" --file ./config/kvm.json --cred "$SA_KEY_PATH" --token ""
 
-echo "API Configurations Deployed!"
+echo "🔧 Deploying Target Servers..."
+apigeecli targetservers create --env "$ENV" --org "$ORG" --file ./config/target-servers.json --cred "$SA_KEY_PATH" --token ""
+
+echo "🔧 Deploying API Products..."
+apigeecli products create --org "$ORG" --file ./config/product.json --cred "$SA_KEY_PATH" --token ""
+
+echo "✅ Config deployment completed."
