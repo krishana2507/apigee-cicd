@@ -1,16 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.apigee</groupId>
+  <artifactId>apigee-cicd</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
 
-    <groupId>com.apigee</groupId>
-    <artifactId>apigee-cicd</artifactId>
-    <version>1.0</version>
-    <packaging>pom</packaging>
+  <modules>
+    <module>apiproxies/my-proxy</module>
+    <module>sharedflows/my-shared-flow</module>
+  </modules>
 
-    <modules>
-        <module>apiproxies/my-proxy</module>
-        <module>sharedflows/my-shared-flow</module>
-    </modules>
+  <repositories>
+    <repository>
+      <id>apigee-github</id>
+      <url>https://raw.githubusercontent.com/apigee/apigee-config-maven-plugin/main/maven-repo/</url>
+    </repository>
+  </repositories>
 </project>
