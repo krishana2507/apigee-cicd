@@ -2,77 +2,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example</groupId>
-  <artifactId>apigee-ci-cd</artifactId>
-  <version>1.0.0</version>
-  <packaging>pom</packaging>
+    <groupId>com.apigee</groupId>
+    <artifactId>apigee-cicd</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
 
-  <repositories>
-    <repository>
-      <id>apigee-repo</id>
-      <url>https://raw.githubusercontent.com/apigee/apigee-deploy-maven-plugin-repo/master</url>
-    </repository>
-  </repositories>
-
-  <profiles>
-    <profile>
-      <id>deploy</id>
-      <properties>
-        <apigee.org>${env.APIGEE_ORG}</apigee.org>
-        <apigee.env>${env.APIGEE_ENV}</apigee.env>
-        <apigee.credentials>${env.APIGEE_CREDENTIALS}</apigee.credentials>
-      </properties>
-      <build>
-        <plugins>
-          <!-- Proxy Deployment Plugin -->
-          <plugin>
-            <groupId>io.apigee.build-tools.enterprise4g</groupId>
-            <artifactId>apigee-deploy-maven-plugin</artifactId>
-            <version>1.2.0</version>
-            <executions>
-              <execution>
-                <phase>install</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <organization>${apigee.org}</organization>
-              <environment>${apigee.env}</environment>
-              <credentials>${apigee.credentials}</credentials>
-              <override>true</override>
-              <deployment.suffix>ci</deployment.suffix>
-              <apiproxy>apiproxy</apiproxy>
-            </configuration>
-          </plugin>
-
-          <!-- Config Plugin -->
-          <plugin>
-            <groupId>com.apigee.edge.config</groupId>
-            <artifactId>apigee-config-maven-plugin</artifactId>
-            <version>2.1.1</version>
-            <executions>
-              <execution>
-                <phase>install</phase>
-                <goals>
-                  <goal>kvms</goal>
-                  <goal>targetservers</goal>
-                  <goal>products</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <apigeeOrg>${apigee.org}</apigeeOrg>
-              <apigeeEnv>${apigee.env}</apigeeEnv>
-              <credentials>${apigee.credentials}</credentials>
-              <filePath>${project.basedir}/config</filePath>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+    <modules>
+        <module>apiproxies/my-proxy</module>
+        <module>sharedflows/my-shared-flow</module>
+    </modules>
 </project>
