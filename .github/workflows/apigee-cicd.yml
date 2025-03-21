@@ -1,4 +1,4 @@
-name: Apigee X CI/CD Pipeline  
+name: Apigee X CI/CD Pipeline
 
 on:
   push:
@@ -17,15 +17,16 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'  # Updated from Java 11 to 17
+          java-version: '17'
 
-      - name: Decode GCP Service Account Key
+      - name: Create gcp-key.json file from secret
         run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
 
-      - name: Authenticate and Generate Access Token
+      - name: Authenticate with service account and generate access token
         id: generate_token
         run: |
-          ACCESS_TOKEN=$(gcloud auth activate-service-account --key-file=gcp-key.json --quiet && gcloud auth print-access-token)
+          gcloud auth activate-service-account --key-file=gcp-key.json --quiet
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
           echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Install Apigee CLI
@@ -77,13 +78,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Decode Service Account
+      - name: Create gcp-key.json file from secret
         run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
 
-      - name: Authenticate and Generate Access Token
+      - name: Authenticate with service account and generate access token
         id: generate_token
         run: |
-          ACCESS_TOKEN=$(gcloud auth activate-service-account --key-file=gcp-key.json --quiet && gcloud auth print-access-token)
+          gcloud auth activate-service-account --key-file=gcp-key.json --quiet
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
           echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Rollback Deployment
@@ -91,6 +93,7 @@ jobs:
 
       - name: Cleanup
         run: rm -f gcp-key.json
+
 
 
 
