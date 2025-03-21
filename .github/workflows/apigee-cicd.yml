@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy to Apigee X
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +21,14 @@ jobs:
           java-version: '17'
 
       - name: Create gcp-key.json file from secret
-        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | sed 's/\\\\n/\\n/g' > gcp-key.json
 
       - name: Authenticate with service account and generate access token
         id: generate_token
         run: |
           gcloud auth activate-service-account --key-file=gcp-key.json --quiet
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
           ACCESS_TOKEN=$(gcloud auth print-access-token)
           echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
@@ -71,6 +74,7 @@ jobs:
           rm -rf ~/.m2/repository/io/apigee/build-tools/enterprise4g/
 
   rollback:
+    name: Rollback on Failure
     runs-on: ubuntu-latest
     if: failure()
 
@@ -79,12 +83,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Create gcp-key.json file from secret
-        run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | sed 's/\\\\n/\\n/g' > gcp-key.json
 
       - name: Authenticate with service account and generate access token
         id: generate_token
         run: |
           gcloud auth activate-service-account --key-file=gcp-key.json --quiet
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
           ACCESS_TOKEN=$(gcloud auth print-access-token)
           echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
@@ -93,105 +99,3 @@ jobs:
 
       - name: Cleanup
         run: rm -f gcp-key.json
-
-
-
-
-
-
-
-
-
-
-
-# name: Apigee X CI/CD Pipeline 
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout Code
-#         uses: actions/checkout@v3
-
-#       - name: Set Up JDK & Maven
-#         uses: actions/setup-java@v3
-#         with:
-#           distribution: 'temurin'
-#           java-version: '11'
-#           cache: 'maven'
-
-#       - name: Decode GCP Service Account Key # ✅ UPDATED: Save decoded JSON to a file
-#         run: echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
-
-#       - name: Authenticate with Google Cloud
-#         uses: google-github-actions/auth@v2
-#         with:
-#           credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-#       - name: Install Apigee CLI
-#         run: |
-#           curl -LO https://github.com/apigee/apigeecli/releases/download/v2.9.1/apigeecli_v2.9.1_Linux_x86_64.zip
-#           unzip apigeecli_v2.9.1_Linux_x86_64.zip
-#           chmod +x apigeecli_v2.9.1_Linux_x86_64/apigeecli
-#           sudo mv apigeecli_v2.9.1_Linux_x86_64/apigeecli /usr/local/bin/
-#           apigeecli -v
-
-#       - name: Speed Up OWASP Dependency Check (optional)
-#         run: |
-#           mkdir -p ~/.dependency-check
-#           export DC_CACHE_DIR=~/.dependency-check
-#           mvn org.owasp:dependency-check-maven:check \
-#             -Dformat=JSON \
-#             -Dnvd.api.key=${{ secrets.NVD_API_KEY }} \
-#             -DdataDirectory=${DC_CACHE_DIR}
-
-#       - name: Deploy Apigee Proxy using Maven # ✅ UPDATED: Reference the JSON file instead of passing raw key
-#         run: |
-#           mvn clean install \
-#             -Pdeploy \
-#             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
-#             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
-#             -Dapigee.credentials=$(pwd)/gcp-key.json \
-#             -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
-#         env:
-#           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-#           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-#           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-
-#       - name: Deploy Shared Flow using Maven
-#         run: |
-#           mvn clean install \
-#             -Pdeploy \
-#             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
-#             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
-#             -Dapigee.credentials=$(pwd)/gcp-key.json \
-#             -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
-#         env:
-#           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-#           APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-#           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-
-#       - name: Deploy KVMs, Products, Target Servers
-#         run: bash scripts/deploy-configs.sh
-
-#       - name: Cleanup
-#         run: |
-#           rm -f gcp-key.json
-#           rm -rf ~/.m2/repository/io/apigee/build-tools/enterprise4g/
-
-#   rollback:
-#     runs-on: ubuntu-latest
-#     if: failure()
-
-#     steps:
-#       - name: Checkout Code
-#         uses: actions/checkout@v3
-
-#       - name: Rollback Deployment
-#         run: bash scripts/rollback.sh
