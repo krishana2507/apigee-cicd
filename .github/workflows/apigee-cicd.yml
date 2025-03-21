@@ -52,7 +52,6 @@ jobs:
             -Dapigee.org=${{ secrets.APIGEE_ORG }} \
             -Dapigee.env=${{ secrets.APIGEE_ENV }} \
             -Dapigee.credentials=$(pwd)/gcp-key.json \
-            -Dapigee.config.options=update \
             -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
         env:
           APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
