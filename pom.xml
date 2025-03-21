@@ -1,74 +1,71 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.example</groupId>
-  <artifactId>apigee-cicd</artifactId>
+  <artifactId>apigee-ci-cd</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
-  <name>apigee-cicd</name>
+  <profiles>
+    <profile>
+      <id>deploy</id>
+      <properties>
+        <apigee.org>${env.APIGEE_ORG}</apigee.org>
+        <apigee.env>${env.APIGEE_ENV}</apigee.env>
+        <apigee.token>${env.APIGEE_TOKEN}</apigee.token>
+      </properties>
+      <build>
+        <plugins>
+          <!-- Proxy Deployment Plugin -->
+          <plugin>
+            <groupId>io.apigee.build-tools.enterprise4g</groupId>
+            <artifactId>apigee-deploy-maven-plugin</artifactId>
+            <version>1.2.0</version>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <organization>${apigee.org}</organization>
+              <environment>${apigee.env}</environment>
+              <bearer>${apigee.token}</bearer>
+              <override>true</override>
+              <deployment.suffix>ci</deployment.suffix>
+              <apiproxy>apiproxy</apiproxy>
+            </configuration>
+          </plugin>
 
-  <properties>
-    <apigee.org>${env.APIGEE_ORG}</apigee.org>
-    <apigee.env>${env.APIGEE_ENV}</apigee.env>
-    <apigee.token>${env.APIGEE_TOKEN}</apigee.token>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <build>
-    <plugins>
-
-      <!-- Plugin to deploy API Proxies -->
-      <plugin>
-        <groupId>io.apigee.build-tools.enterprise4g</groupId>
-        <artifactId>apigee-deploy-maven-plugin</artifactId>
-        <version>1.2.0</version>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>deploy</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <organization>${apigee.org}</organization>
-          <environment>${apigee.env}</environment>
-          <bearer>${apigee.token}</bearer>
-          <override>true</override>
-          <deployment.suffix>ci</deployment.suffix>
-          <apiproxy>apiproxy</apiproxy>
-        </configuration>
-      </plugin>
-
-      <!-- Plugin to deploy Configs like KVMs, TargetServers -->
-      <plugin>
-        <groupId>com.apigee.edge.config</groupId>
-        <artifactId>apigee-config-maven-plugin</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>kvms</goal>
-              <goal>targetservers</goal>
-              <goal>products</goal>
-              <!-- Add other goals like developers, apps etc. if needed -->
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <apigeeOrg>${apigee.org}</apigeeOrg>
-          <apigeeEnv>${apigee.env}</apigeeEnv>
-          <bearer>${apigee.token}</bearer>
-          <filePath>${project.basedir}/config</filePath>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
-
+          <!-- Config Plugin -->
+          <plugin>
+            <groupId>com.apigee.edge.config</groupId>
+            <artifactId>apigee-config-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>kvms</goal>
+                  <goal>targetservers</goal>
+                  <goal>products</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <apigeeOrg>${apigee.org}</apigeeOrg>
+              <apigeeEnv>${apigee.env}</apigeeEnv>
+              <bearer>${apigee.token}</bearer>
+              <filePath>${project.basedir}/config</filePath>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
