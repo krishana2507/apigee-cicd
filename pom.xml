@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,7 +15,7 @@
       <properties>
         <apigee.org>${env.APIGEE_ORG}</apigee.org>
         <apigee.env>${env.APIGEE_ENV}</apigee.env>
-        <apigee.token>${env.APIGEE_TOKEN}</apigee.token>
+        <apigee.credentials>${env.APIGEE_CREDENTIALS}</apigee.credentials>
       </properties>
       <build>
         <plugins>
@@ -35,7 +35,7 @@
             <configuration>
               <organization>${apigee.org}</organization>
               <environment>${apigee.env}</environment>
-              <bearer>${apigee.token}</bearer>
+              <credentials>${apigee.credentials}</credentials>
               <override>true</override>
               <deployment.suffix>ci</deployment.suffix>
               <apiproxy>apiproxy</apiproxy>
@@ -60,7 +60,7 @@
             <configuration>
               <apigeeOrg>${apigee.org}</apigeeOrg>
               <apigeeEnv>${apigee.env}</apigeeEnv>
-              <bearer>${apigee.token}</bearer>
+              <credentials>${apigee.credentials}</credentials>
               <filePath>${project.basedir}/config</filePath>
             </configuration>
           </plugin>
