@@ -1,19 +1,41 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.apigee</groupId>
-  <artifactId>apigee-cicd</artifactId>
+
+  <groupId>com.krishna</groupId>
+  <artifactId>apigee-configs</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
 
-  <modules>
-    <module>apiproxies/my-proxy</module>
-    <module>sharedflows/my-shared-flow</module>
-  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.google.apigee</groupId>
+        <artifactId>apigee-config-maven-plugin</artifactId>
+        <version>1.2.0</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>configure</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <apigeeOrg>${apigee.org}</apigeeOrg>
+          <apigeeEnv>${apigee.env}</apigeeEnv>
+          <bearer>${apigee.token}</bearer>
+          <file>config/apigee-config.json</file>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <repositories>
     <repository>
-      <id>apigee-github</id>
-      <url>https://raw.githubusercontent.com/apigee/apigee-config-maven-plugin/main/maven-repo/</url>
+      <id>apigee-repo</id>
+      <url>https://raw.githubusercontent.com/apigee/apigee-config-maven-plugin/main/repo</url>
     </repository>
   </repositories>
 </project>
