@@ -4,30 +4,23 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.apigee.edge</groupId>
-    <artifactId>apigee-parent</artifactId>
-    <version>1.0.0</version> <!-- Use 1.0.0 or latest -->
-  </parent>
-
   <groupId>com.krishna</groupId>
   <artifactId>my-proxy</artifactId>
-  <version>1.0</version>
-  <packaging>apiproxy</packaging> <!-- ✅ Now valid -->
-
-  <name>My Apigee Proxy</name>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>com.apigee.edge</groupId>
-        <artifactId>apigee-edge-maven-plugin</artifactId>
-        <version>1.0.0</version> <!-- Use version aligned with parent -->
+        <groupId>com.apigee</groupId>
+        <artifactId>apigee-deploy-maven-plugin</artifactId>
+        <version>1.3.1</version>
         <configuration>
-          <org>${apigee.org}</org>
-          <env>${apigee.env}</env>
-          <token>${apigee.token}</token>
-          <apiProxy>my-proxy</apiProxy>
+          <apigeeOrg>${apigee.org}</apigeeOrg>
+          <apigeeEnv>${apigee.env}</apigeeEnv>
+          <bearer>${apigee.token}</bearer>
+          <api>${project.artifactId}</api>
+          <source>${project.basedir}/apiproxy</source>
         </configuration>
       </plugin>
     </plugins>
