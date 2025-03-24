@@ -27,7 +27,11 @@ jobs:
 
       - name: Deploy API Proxy using Maven
         run: |
-          mvn install -Pdeploy -f apiproxies/my-proxy/pom.xml 
+          mvn install apigee:deploy \
+            -Dapigee.org=krishna-cicd-project \
+            -Dapigee.env=eval \
+            -Dapigee.token=${APIGEE_TOKEN} \
+            -f apiproxies/my-proxy/pom.xml 
 
       - name: Deploy Shared Flow using Maven
         run: |
