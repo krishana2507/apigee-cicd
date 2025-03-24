@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy API Proxy using Maven
         run: |
-          mvn install -Pdeploy -f apiproxies/my-proxy/pom.xml 
+          mvn install -Pdeploy -X -f apiproxies/my-proxy/pom.xml 
 
       - name: Deploy Shared Flow using Maven
         run: |
