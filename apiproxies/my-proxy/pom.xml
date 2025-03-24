@@ -1,47 +1,26 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.apigee</groupId>
+
+  <groupId>com.krishna</groupId>
   <artifactId>my-proxy</artifactId>
-  <version>1.0.0</version>
-  <packaging>pom</packaging>
+  <version>1.0</version>
+  <packaging>apiproxy</packaging>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>com.google.apigee</groupId>
-        <artifactId>apigee-config-maven-plugin</artifactId>
-        <version>1.2.0</version>
+        <groupId>io.apigee.build-tools.enterprise4g</groupId>
+        <artifactId>apigee-edge-maven-plugin</artifactId>
+        <version>2.1.1</version> <!-- use 2.x for Apigee X -->
+        <configuration>
+          <apigeeOrg>${apigee.org}</apigeeOrg>
+          <apigeeEnv>${apigee.env}</apigeeEnv>
+          <bearer>${apigee.token}</bearer>
+          <apiproxy>apiproxy</apiproxy>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>deploy</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.google.apigee</groupId>
-            <artifactId>apigee-config-maven-plugin</artifactId>
-            <version>1.2.0</version>
-            <configuration>
-              <org>${apigee.org}</org>
-              <env>${apigee.env}</env>
-              <bearer>${apigee.bearer}</bearer>
-              <proxyPath>apiproxy</proxyPath>
-              <override>true</override>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>install</phase>
-                <goals>
-                  <goal>apiproxydeploy</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
