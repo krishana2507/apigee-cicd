@@ -1,35 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.apigee</groupId>
-    <artifactId>my-shared-flow</artifactId>
-    <version>1.0.0</version>
-    <packaging>pom</packaging>
+  <groupId>com.krishna</groupId>
+  <artifactId>my-shared-flow</artifactId>
+  <version>1.0</version>
+  <packaging>sharedflow</packaging>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.google.apigee</groupId>
-                <artifactId>apigee-config-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploySharedFlow</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <organization>${env.APIGEE_ORG}</organization>
-                    <environment>${env.APIGEE_ENV}</environment>
-                    <token>${env.APIGEE_TOKEN}</token>
-                    <sharedFlowBundle>sharedflowbundle</sharedFlowBundle>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.apigee.build-tools.enterprise4g</groupId>
+        <artifactId>apigee-edge-maven-plugin</artifactId>
+        <version>2.1.1</version> <!-- Same 2.x plugin -->
+        <configuration>
+          <apigeeOrg>${apigee.org}</apigeeOrg>
+          <apigeeEnv>${apigee.env}</apigeeEnv>
+          <bearer>${apigee.token}</bearer>
+          <sharedFlowBundle>sharedflowbundle</sharedFlowBundle>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
