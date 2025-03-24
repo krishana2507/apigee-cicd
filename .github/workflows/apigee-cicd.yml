@@ -26,11 +26,14 @@ jobs:
 
       - name: Authenticate with service account and generate access token
         id: generate_token
+        shell: bash
         run: |
+          set -e
           gcloud auth activate-service-account --key-file=gcp-key.json --quiet
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud config set project "${{ secrets.GCP_PROJECT_ID }}"
           ACCESS_TOKEN=$(gcloud auth print-access-token)
-          echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
+          echo "token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
 
       - name: Install Apigee CLI
         run: |
