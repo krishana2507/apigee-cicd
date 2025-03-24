@@ -7,32 +7,22 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Apigee X
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set Up JDK & Maven
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Create gcp-key.json file from secret
+      - name: Create gcp-key.json from GitHub Secret
         run: |
-           echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+          echo '${{ secrets.GCP_SA_KEY }}' > gcp-key.json
 
-      - name: Authenticate with service account and generate access token
+      - name: Authenticate with service account
         id: generate_token
-        shell: bash
         run: |
-          set -e
           gcloud auth activate-service-account --key-file=gcp-key.json --quiet
-          gcloud config set project "${{ secrets.GCP_PROJECT_ID }}"
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
           ACCESS_TOKEN=$(gcloud auth print-access-token)
-          echo "token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+          echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
 
       - name: Install Apigee CLI
