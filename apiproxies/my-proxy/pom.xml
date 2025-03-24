@@ -1,13 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.krishna</groupId>
   <artifactId>my-proxy</artifactId>
   <version>1.0.0</version>
-  <packaging>pom</packaging>
 
   <build>
     <plugins>
@@ -17,23 +16,27 @@
         <version>0.10.1</version>
         <executions>
           <execution>
-            <id>deploy-apiproxy</id>
-            <phase>install</phase>
             <goals>
               <goal>deploy</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <googleAccessToken>${apigee.bearer}</googleAccessToken>
-          <org>${apigee.org}</org>
-          <env>${apigee.env}</env>
-          <apiproxy>${project.basedir}/apiproxy</apiproxy>
-          <name>${project.artifactId}</name>
+          <apigee.org>${apigee.org}</apigee.org>
+          <apigee.token>${apigee.token}</apigee.token>
+          <apigee.host>${apigee.host}</apigee.host>
+          <source>${project.basedir}</source>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apigee</id>
+      <url>https://raw.githubusercontent.com/apigee/apigee-sackmesser/main/maven-repo</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
 
 
