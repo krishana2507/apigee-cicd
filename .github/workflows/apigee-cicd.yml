@@ -27,10 +27,7 @@ jobs:
 
       - name: Deploy API Proxy using Maven
         run: |
-          mvn clean install -f apiproxies/my-proxy/pom.xml \
-            -Dapigee.org=${{ secrets.APIGEE_ORG }} \
-            -Dapigee.env=${{ secrets.APIGEE_ENV }} \
-            -Dapigee.bearer=$APIGEE_TOKEN
+          mvn install -Pdeploy -f apiproxies/my-proxy/pom.xml 
 
       - name: Deploy Shared Flow using Maven
         run: |
