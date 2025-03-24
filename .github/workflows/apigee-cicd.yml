@@ -22,7 +22,7 @@ jobs:
 
       - name: Create gcp-key.json file from secret
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | sed 's/\\\\n/\\n/g' > gcp-key.json
+           echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
 
       - name: Authenticate with service account and generate access token
         id: generate_token
