@@ -1,12 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.krishna</groupId>
   <artifactId>my-proxy</artifactId>
   <version>1.0.0</version>
+
+  <properties>
+    <apigee.org>your-apigee-org-name</apigee.org>
+    <apigee.host>apigee.googleapis.com</apigee.host>
+    <apigee.token>${env.APIGEE_ACCESS_TOKEN}</apigee.token>
+  </properties>
 
   <build>
     <plugins>
@@ -25,7 +32,7 @@
           <apigee.org>${apigee.org}</apigee.org>
           <apigee.token>${apigee.token}</apigee.token>
           <apigee.host>${apigee.host}</apigee.host>
-          <source>${project.basedir}</source>
+          <source>${project.basedir}/apiproxy</source>
         </configuration>
       </plugin>
     </plugins>
@@ -37,7 +44,9 @@
       <url>https://raw.githubusercontent.com/apigee/apigee-sackmesser/main/maven-repo</url>
     </pluginRepository>
   </pluginRepositories>
+
 </project>
+
 
 
 
