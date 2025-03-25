@@ -9,22 +9,40 @@
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <apigee.org>dummy</apigee.org>
+    <apigee.env>dummy</apigee.env>
+    <apigee.token>dummy</apigee.token>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
-        <groupId>com.apigee</groupId>
+        <groupId>com.google.apigee</groupId>
         <artifactId>apigee-deploy-maven-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.0.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <apigeeOrg>${apigee.org}</apigeeOrg>
-          <apigeeEnv>${apigee.env}</apigeeEnv>
-          <bearer>${apigee.token}</bearer>
+          <org>${apigee.org}</org>
+          <env>${apigee.env}</env>
+          <token>${apigee.token}</token>
           <api>${project.artifactId}</api>
-          <source>${project.basedir}/apiproxy</source>
+          <directory>apiproxy</directory>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apigee-maven</id>
+      <url>https://raw.githubusercontent.com/apigee/apigee-deploy-maven-plugin/main/repo</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
-
